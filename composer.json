@@ -1,0 +1,38 @@
+{
+    "name": "jiannius/job-tracker",
+    "description": "Jiannius Job Tracker",
+    "type": "library",
+    "require": {
+        "doctrine/dbal": "^3.6",
+        "laravel/pail": "^1.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Jiannius\\JobTracker\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "TJ",
+            "email": "tj@jiannius.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jiannius\\JobTracker\\JobTrackerServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": false,
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
+}
