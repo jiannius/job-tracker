@@ -8,6 +8,7 @@ use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Queue\Events\JobQueued;
 use Illuminate\Queue\QueueManager;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,7 +23,9 @@ class JobTrackerServiceProvider extends ServiceProvider
     // boot
     public function boot() : void
     {
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'job-tracker');
 
         /**
          * Listen for queued event
@@ -59,6 +62,23 @@ class JobTrackerServiceProvider extends ServiceProvider
 
         $manager->exceptionOccurred(static function (JobExceptionOccurred $event) {
             app(JobTracker::class)->exception($event);
+        });
+
+        /**
+         * Tag compiler for using <jobtracker:progress/> as component
+         */
+        Blade::anonymousComponentPath(__DIR__.'/../components', 'job-tracker');
+
+        $compiler = new \Jiannius\JobTracker\JobTrackerTagCompiler(
+            app('blade.compiler')->getClassComponentAliases(),
+            app('blade.compiler')->getClassComponentNamespaces(),
+            app('blade.compiler')
+        );
+
+        app()->bind('job-tracker.compiler', fn () => $compiler);
+
+        app('blade.compiler')->precompiler(function ($in) use ($compiler) {
+            return $compiler->compile($in);
         });
     }
 }

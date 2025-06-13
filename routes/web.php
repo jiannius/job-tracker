@@ -2,8 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('__ipay88')->as('__ipay88')->withoutMiddleware('web')->group(function () {
-    Route::post('redirect', [\App\Http\Controllers\Ipay88Controller::class, 'redirect'])->name('.redirect');
-    Route::post('webhook', [\App\Http\Controllers\Ipay88Controller::class, 'webhook'])->name('.webhook');
-    Route::get('checkout', [\Jiannius\Ipay88\Ipay88Controller::class, 'checkout'])->name('.checkout');
+Route::middleware('web')->group(function () {
+    Route::post('__job-tracker', \Jiannius\JobTracker\Controllers\JobTrackerController::class)->name('__job-tracker');
+    Route::delete('__job-tracker/{id}', [\Jiannius\JobTracker\Controllers\JobTrackerController::class, 'delete'])->name('__job-tracker.delete');
 });
