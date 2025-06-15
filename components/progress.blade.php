@@ -17,7 +17,14 @@ x-data="{
     },
 
     get isShow () {
-        return !this.isLoading && this.tracker && (!this.isFinished || this.counter > 1 || this.hasErrors)
+        return !this.isLoading
+            && this.tracker
+            && (
+                !this.isFinished
+                || this.counter > 1
+                || this.hasErrors
+                || this.isDownloadable
+            )
     },
 
     get isQueued () {
@@ -35,25 +42,32 @@ x-data="{
             || this.tracker?.status === @js(\Jiannius\JobTracker\Enums\JobTrackerStatus::FAILED->value)
     },
 
+    get isDownloadable () {
+        return this.tracker?.is_downloadable
+    },
+
     get hasErrors () {
         return this.tracker && !empty(this.tracker.errors)
+    },
+
+    get csrfToken () {
+        return document.querySelector(`meta[name='csrf-token']`).getAttribute('content')
     },
 
     getJobTracker (delay = 0) {
         if (this.counter === null) return
 
         setTimeout(() => {
+            const formdata = new FormData();
+            formdata.append('id', @js($id ?? ''));
+            formdata.append('uuid', @js($uuid ?? ''));
+            formdata.append('name', @js($name ?? ''));
+            formdata.append('user', @js($user?->id ?? ''));
+            
             return fetch('/__job-tracker', {
                 method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector(`meta[name='csrf-token']`).getAttribute('content'),
-                },
-                body: JSON.stringify({
-                    id: @js($id),
-                    uuid: @js($uuid),
-                    name: @js($name),
-                    user: @js($user?->id)
-                })
+                headers: { 'X-CSRF-TOKEN': this.csrfToken },
+                body: formdata,
             }).then(res => (res.json())).then(res => {
                 if (empty(res)) return this.reset()
 
@@ -67,13 +81,11 @@ x-data="{
 
     deleteJobTracker () {
         if (!this.tracker?.id) return
-        if (!this.hasErrors) return
+        if (!this.hasErrors && !this.isDownloadable) return
 
         return fetch('/__job-tracker/'+this.tracker.id, {
             method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector(`meta[name='csrf-token']`).getAttribute('content'),
-            },
+            headers: { 'X-CSRF-TOKEN': this.csrfToken },
         })
     },
 
@@ -162,7 +174,17 @@ x-init="$nextTick(() => $dispatch('get-job-tracker'))">
                     }"
                     class="h-full bg-accent transition-all duration-500"></div>
                 </div>
-                <div x-text="tracker.filename" x-show="tracker.filename"></div>
+
+                <div class="flex items-center gap-2">
+                    <div x-text="tracker.filename" x-show="tracker.filename" class="grow truncate"></div>
+
+                    <template x-if="isDownloadable" hidden>
+                        <a x-bind:href="`/__job-tracker/download/${tracker.id}`" class="text-sm text-blue-500 underline decoration-dotted inline-flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download-icon lucide-download"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+                            {{ __('job-tracker::messages.download') }}
+                        </a>
+                    </template>
+                </div>
             </div>
 
             <template x-if="hasErrors" hidden>

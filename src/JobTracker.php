@@ -82,6 +82,7 @@ class JobTracker
         if (!$trackable) return;
 
         $tracker = \App\Models\JobTracker::query()
+            ->withoutGlobalScopes()
             ->where('uuid', $uuid)
             ->whereIn('status', [JobTrackerStatus::QUEUED, JobTrackerStatus::RUNNING])
             ->first();

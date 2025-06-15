@@ -20,6 +20,11 @@ class JobTrackerObserver
                 $tracker->expires_at?->isPast() => JobTrackerStatus::EXPIRED,
                 default => JobTrackerStatus::QUEUED,
             },
+            'filename' => $tracker->filename ?? (
+                $tracker->path
+                ? str($tracker->path)->afterLast('/')->toString()
+                : null
+            ),
         ]);
     }
 

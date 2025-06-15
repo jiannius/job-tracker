@@ -8,7 +8,7 @@ use App\Models\JobTracker;
 
 class JobTrackerController extends Controller
 {
-    public function __invoke(Request $request)
+    public function get(Request $request)
     {
         $job = null;
 
@@ -36,5 +36,14 @@ class JobTrackerController extends Controller
         if ($job) $job->delete();
 
         return response()->json(true);
+    }
+
+    public function download(Request $request)
+    {
+        $tracker = JobTracker::withoutGlobalScopes()->find($request->id);
+
+        if (!file_exists(storage_path('app/'.$tracker->path))) abort(404);
+
+        return response()->download(storage_path('app/'.$tracker->path));
     }
 }

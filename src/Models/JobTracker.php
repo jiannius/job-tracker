@@ -23,6 +23,7 @@ class JobTracker extends Model
         'data' => 'array',
         'errors' => 'array',
         'messages' => 'array',
+        'is_downloadable' => 'boolean',
         'started_at' => 'datetime',
         'finished_at' => 'datetime',
         'failed_at' => 'datetime',
@@ -38,11 +39,6 @@ class JobTracker extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(\App\Models\User::class);
-    }
-
-    public function job(): BelongsTo
-    {
-        return $this->belongsTo(Job::class);
     }
 
     public function reset()

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->json('messages')->nullable();
             $table->json('errors')->nullable();
             $table->json('data')->nullable();
+            $table->boolean('is_downloadable')->nullable()->default(false);
             $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamp('started_at')->nullable();
             $table->timestamp('finished_at')->nullable();

@@ -9,7 +9,9 @@ trait Trackable
     public function jobTracker()
     {
         if (!$this->jobTracker) {
-            $this->jobTracker = \App\Models\JobTracker::where('uuid', $this->job->uuid())->first();
+            $this->jobTracker = \App\Models\JobTracker::withoutGlobalScopes()
+                ->where('uuid', $this->job->uuid())
+                ->first();
         }
 
         return $this->jobTracker;
