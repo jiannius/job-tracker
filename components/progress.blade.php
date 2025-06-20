@@ -89,18 +89,18 @@ x-data="{
         })
     },
 
-    exit () {
+    exitJobTracker () {
         this.deleteJobTracker()
         this.reset()
     },
 
-    reset () {
+    resetJobTracker () {
         this.tracker = null
         this.counter = null
     },
 }"
 x-on:get-job-tracker.window="() => { counter = 0; getJobTracker(); }"
-x-on:stop-job-tracker.window="reset()"
+x-on:reset-job-tracker.window="resetJobTracker()"
 x-init="$nextTick(() => $dispatch('get-job-tracker'))">
     <template x-if="isLoading" hidden>
         <svg role="img" width="340" height="84" aria-labelledby="loading-aria" viewBox="0 0 340 84" preserveAspectRatio="none">
@@ -202,7 +202,7 @@ x-init="$nextTick(() => $dispatch('get-job-tracker'))">
             </template>
 
             <template x-if="isFinished" hidden>
-                <button type="button" class="text-sm text-blue-500 underline decoration-dotted inline-flex items-center gap-2" x-on:click="exit()">
+                <button type="button" class="text-sm text-blue-500 underline decoration-dotted inline-flex items-center gap-2" x-on:click="exitJobTracker()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-icon lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
                     {{ __('job-tracker::messages.exit-job') }}
                 </button>
