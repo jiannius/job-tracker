@@ -69,7 +69,7 @@ x-data="{
                 headers: { 'X-CSRF-TOKEN': this.csrfToken },
                 body: formdata,
             }).then(res => (res.json())).then(res => {
-                if (empty(res)) return this.reset()
+                if (empty(res)) return this.resetJobTracker()
 
                 this.tracker = res
 
@@ -91,7 +91,7 @@ x-data="{
 
     exitJobTracker () {
         this.deleteJobTracker()
-        this.reset()
+        this.resetJobTracker()
     },
 
     resetJobTracker () {
