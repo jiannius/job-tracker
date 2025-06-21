@@ -105,7 +105,7 @@ class JobTracker extends Model
         return $this;
     }
 
-    public function setProgress($progress, $total = null)
+    public function setProgress($progress = 0, $total = null)
     {
         if ($total) {
             $progress = $total <= 0 ? 0 : min(100, round(($progress / $total) * 100));
