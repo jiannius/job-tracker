@@ -2,23 +2,30 @@
 
 namespace Jiannius\JobTracker\Traits;
 
+/**
+ * Trackable trait - to be consumed by the job
+ */
 trait Trackable
 {
-    public $jobTracker;
+    public $tracker;
 
-    public function jobTracker()
+    /**
+     * Get the job tracker.
+     */
+    public function tracker()
     {
-        if (!$this->jobTracker) {
-            $this->jobTracker = \App\Models\JobTracker::withoutGlobalScopes()
-                ->where('uuid', $this->job->uuid())
-                ->first();
-        }
+        $this->tracker ??= \App\Models\JobTracker::withoutGlobalScopes()
+            ->where('uuid', $this->job->uuid())
+            ->first();
 
-        return $this->jobTracker;
+        return $this->tracker;
     }
 
-    public static function deleteJobTrackerOnFinished($jobTracker) : bool
+    /**
+     * Delete the job tracker on finished.
+     */
+    public static function deleteJobTrackerOnFinished($tracker) : bool
     {
-        return empty($jobTracker->errors);
+        return false;
     }
 }

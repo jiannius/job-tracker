@@ -7,14 +7,12 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Jiannius\JobTracker\Observers\JobTrackerObserver;
+use Jiannius\JobTracker\Models\Observers\JobTrackerObserver;
 
 class JobTracker extends Model
 {
     use HasFactory;
     use HasUlids;
-
-    protected $guarded = [];
 
     protected $casts = [
         'progress' => 'integer',
@@ -31,16 +29,25 @@ class JobTracker extends Model
         'expires_at' => 'datetime',
     ];
 
+    /**
+     * The "booted" method for the model
+     */
     protected static function booted()
     {
         static::observe(new JobTrackerObserver);
     }
 
+    /**
+     * Get the user that owns the job tracker.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(\App\Models\User::class);
     }
 
+    /**
+     * Reset the job tracker.
+     */
     public function reset()
     {
         $this->update([
@@ -57,36 +64,57 @@ class JobTracker extends Model
         ]);
     }
 
+    /**
+     * Check if the job tracker is queued.
+     */
     public function isQueued() : bool
     {
         return $this->fresh()->status === JobTrackerStatus::QUEUED;
     }
 
+    /**
+     * Check if the job tracker is running.
+     */
     public function isRunning() : bool
     {
         return $this->fresh()->status === JobTrackerStatus::RUNNING;
     }
 
+    /**
+     * Check if the job tracker is finished.
+     */
     public function isFinished() : bool
     {
         return $this->fresh()->status === JobTrackerStatus::FINISHED;
     }
 
+    /**
+     * Check if the job tracker is failed.
+     */
     public function isFailed() : bool
     {
         return $this->fresh()->status === JobTrackerStatus::FAILED;
     }
 
+    /**
+     * Check if the job tracker is stopped.
+     */
     public function isStopped() : bool
     {
         return $this->fresh()->status === JobTrackerStatus::STOPPED;
     }
 
+    /**
+     * Check if the job tracker is expired.
+     */
     public function isExpired() : bool
     {
         return $this->fresh()->status === JobTrackerStatus::EXPIRED;
     }
 
+    /**
+     * Set the errors for the job tracker.
+     */
     public function setErrors(string $error)
     {
         $errors = $this->errors ?? [];
@@ -96,6 +124,9 @@ class JobTracker extends Model
         return $this;
     }
 
+    /**
+     * Set the messages for the job tracker.
+     */
     public function setMessages(string $message)
     {
         $messages = $this->messages ?? [];
@@ -105,6 +136,9 @@ class JobTracker extends Model
         return $this;
     }
 
+    /**
+     * Set the progress for the job tracker.
+     */
     public function setProgress($progress = 0, $total = null)
     {
         if ($total) {
@@ -116,21 +150,33 @@ class JobTracker extends Model
         return $this;
     }
 
+    /**
+     * Start the job tracker.
+     */
     public function start() : void
     {
         $this->update(['started_at' => now()]);
     }
 
+    /**
+     * Stop the job tracker.
+     */
     public function stop() : void
     {
         $this->update(['stopped_at' => now()]);
     }
 
+    /**
+     * Finish the job tracker.
+     */
     public function finished() : void
     {
         $this->update(['finished_at' => now()]);
     }
 
+    /**
+     * Fail the job tracker.
+     */
     public function failed() : void
     {
         $this->update(['failed_at' => now()]);

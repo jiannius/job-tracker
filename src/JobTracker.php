@@ -8,6 +8,9 @@ use Jiannius\JobTracker\Traits\Trackable;
 
 class JobTracker
 {
+    /**
+     * Handle the queued event.
+     */
     public function queued($event) : void
     {
         $tracker = $this->getTracker($event);
@@ -17,6 +20,9 @@ class JobTracker
         $tracker->reset();
     }
 
+    /**
+     * Handle the running event.
+     */
     public function running($event) : void
     {
         $tracker = $this->getTracker($event);
@@ -27,6 +33,9 @@ class JobTracker
         $tracker->update(['attempts' => $event->job->attempts()]);
     }
 
+    /**
+     * Handle the finished event.
+     */
     public function finished($event) : void
     {
         $tracker = $this->getTracker($event);
@@ -43,6 +52,9 @@ class JobTracker
         $tracker->finished();
     }
 
+    /**
+     * Handle the failed event.
+     */
     public function failed($event)
     {
         $tracker = $this->getTracker($event);
@@ -53,6 +65,9 @@ class JobTracker
         $tracker->failed();
     }
 
+    /**
+     * Handle the exception event.
+     */
     public function exception($event)
     {
         if ($event->job->hasFailed()) return;
@@ -64,6 +79,9 @@ class JobTracker
         $tracker->setErrors($event->exception->getMessage());
     }
 
+    /**
+     * Get the job tracker.
+     */
     public function getTracker($event)
     {
         // Get the payload from the event

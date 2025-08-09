@@ -1,12 +1,15 @@
 <?php
 
-namespace Jiannius\JobTracker\Observers;
+namespace Jiannius\JobTracker\Models\Observers;
 
 use Illuminate\Support\Facades\Storage;
 use Jiannius\JobTracker\Enums\JobTrackerStatus;
 
 class JobTrackerObserver
 {
+    /**
+     * Handle the saving event.
+     */
     public function saving($tracker): void
     {
         $tracker->fill([
@@ -28,6 +31,9 @@ class JobTrackerObserver
         ]);
     }
 
+    /**
+     * Handle the deleting event.
+     */
     public function deleting($tracker): void
     {
         if (!$tracker->path) return;
