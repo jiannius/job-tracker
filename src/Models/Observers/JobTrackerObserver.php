@@ -37,7 +37,7 @@ class JobTrackerObserver
     public function deleting($tracker): void
     {
         if (!$tracker->path) return;
-        if (!file_exists(storage_path('app/'.$tracker->path))) return;
+        if (!file_exists(storage_path('app/private/'.$tracker->path))) return;
 
         Storage::disk('local')->delete($tracker->path);
     }
