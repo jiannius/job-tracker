@@ -16,7 +16,6 @@ $icon = [
         jobTracker: @js($jobTracker),
 
         fetch () {
-            console.log(this.jobTracker)
             if (['finished', 'failed'].includes(this.jobTracker.status)) return
 
             this.$wire.getJobTrackerProgress()
@@ -48,7 +47,7 @@ $icon = [
             </div>
         </div>
 
-        <div class="w-full rounded-full h-3 bg-zinc-100 dark:bg-zinc-900 border border-transparent dark:border-zinc-600 overflow-hidden">
+        <div class="w-full rounded-full h-3 bg-zinc-100 overflow-hidden">
             <div
             x-bind:style="`width: ${jobTracker.status === 'running' ? jobTracker.progress : 100}%`"
             x-bind:class="{

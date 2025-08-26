@@ -3,7 +3,6 @@
 namespace Jiannius\JobTracker\Traits;
 
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Renderless;
 
 /**
  * WithJobTracker trait - to be consumed by the livewire component
@@ -27,9 +26,10 @@ trait WithJobTracker
     /**
      * Get the job tracker progress
      */
-    #[Renderless]
     public function getJobTrackerProgress() : array
     {
+        $this->skipRender();
+
         $this->jobTracker->refresh();
 
         return $this->jobTracker->toArray();
