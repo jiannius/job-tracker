@@ -14,6 +14,8 @@ class JobTracker extends Model
     use HasFactory;
     use HasUlids;
 
+    protected $guarded = [];
+
     protected $casts = [
         'progress' => 'integer',
         'attempts' => 'integer',
