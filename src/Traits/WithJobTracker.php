@@ -18,7 +18,7 @@ trait WithJobTracker
     {
         $this->jobTracker = \App\Models\JobTracker::query()
             ->where('name', $name)
-            ->when(Auth::check(), fn ($query) => $query->where('user_id', Auth::id()))
+            ->when(Auth::check(), fn ($query) => $query->where('created_by', Auth::id()))
             ->latest()
             ->first();
     }

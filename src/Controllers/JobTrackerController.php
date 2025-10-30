@@ -20,7 +20,7 @@ class JobTrackerController extends Controller
 
             $job = JobTracker::query()
                 ->whereIn('name', (array) $name)
-                ->when($user, fn($q) => $q->where('user_id', $user))
+                ->when($user, fn($q) => $q->where('created_by', $user))
                 ->latest()
                 ->first();
         }

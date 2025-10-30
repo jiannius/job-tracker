@@ -42,9 +42,9 @@ class JobTracker extends Model
     /**
      * Get the user that owns the job tracker.
      */
-    public function user(): BelongsTo
+    public function createdByUser(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(\App\Models\User::class, 'created_by');
     }
 
     /**

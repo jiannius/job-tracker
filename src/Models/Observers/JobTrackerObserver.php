@@ -14,7 +14,7 @@ class JobTrackerObserver
     {
         $tracker->fill([
             'expires_at' => $tracker->expires_at ?? now()->addDays(7),
-            'user_id' => $tracker->user_id ?? auth()->id(),
+            'created_by' => $tracker->created_by ?? auth()->id(),
             'status' => match (true) {
                 !empty($tracker->finished_at) => JobTrackerStatus::FINISHED,
                 !empty($tracker->stopped_at) => JobTrackerStatus::STOPPED,

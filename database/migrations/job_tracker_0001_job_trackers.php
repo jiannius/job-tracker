@@ -24,13 +24,13 @@ return new class extends Migration
             $table->json('errors')->nullable();
             $table->json('data')->nullable();
             $table->boolean('is_downloadable')->nullable()->default(false);
-            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamp('started_at')->nullable();
             $table->timestamp('finished_at')->nullable();
             $table->timestamp('failed_at')->nullable();
             $table->timestamp('stopped_at')->nullable();
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
+            $table->foreignId('created_by')->nullable()->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 
